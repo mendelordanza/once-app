@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "553791043014",
+    "project_id": "once-aa016",
+    "storage_bucket": "once-aa016.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:553791043014:android:666ebbaa9d2f41afdeaec7",
+        "android_client_info": {
+          "package_name": "com.ralphordanza.once"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "553791043014-iej8d56u1m0l4m46oha8qbvo54c93upv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ralphordanza.once",
+            "certificate_hash": "51c77ee9374094c9efbdfa8a9c53ef651f060779"
+          }
+        },
+        {
+          "client_id": "553791043014-i56sb8jqb15lpvpm7r4tk4050hk6j4u4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgDc_9LOnPu5dpvEasLjJT4WRZ_0Kqf7I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "553791043014-i56sb8jqb15lpvpm7r4tk4050hk6j4u4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "553791043014-3bemnr32gvgi81fkfvrb4edqqc3u19ld.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.once"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

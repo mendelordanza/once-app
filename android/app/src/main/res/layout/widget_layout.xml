@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/widget_root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#F2F2F2">
+
+        <TextView
+            android:id="@+id/tv_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="12dp"
+            android:text="It would be a good day if I..."
+            android:textStyle="bold"
+            android:textColor="#3A3A3A"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_counter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="12dp"
+            android:text="sdfhsdfhjjsdf"
+            android:textColor="#3A3A3A"
+            android:textSize="16sp" />
+    </LinearLayout>
+</FrameLayout>
