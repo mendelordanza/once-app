@@ -716,6 +716,9 @@ PODS:
   - FirebaseMessagingInterop (10.5.0)
   - FirebaseSharedSwift (10.5.0)
   - Flutter (1.0.0)
+  - flutter_libphonenumber (0.0.1):
+    - Flutter
+    - PhoneNumberKit/PhoneNumberKitCore (= 3.3.4)
   - flutter_widgetkit (0.0.1):
     - Flutter
   - GoogleAppMeasurement (10.3.0):
@@ -829,6 +832,7 @@ PODS:
   - nanopb/encode (2.30909.0)
   - package_info_plus (0.4.5):
     - Flutter
+  - PhoneNumberKit/PhoneNumberKitCore (3.3.4)
   - PromisesObjC (2.1.1)
   - shared_preferences_foundation (0.0.1):
     - Flutter
@@ -844,6 +848,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
+  - flutter_libphonenumber (from `.symlinks/plugins/flutter_libphonenumber/ios`)
   - flutter_widgetkit (from `.symlinks/plugins/flutter_widgetkit/ios`)
   - home_widget (from `.symlinks/plugins/home_widget/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -877,6 +882,7 @@ SPEC REPOS:
     - leveldb-library
     - Libuv-gRPC
     - nanopb
+    - PhoneNumberKit
     - PromisesObjC
 
 EXTERNAL SOURCES:
@@ -894,6 +900,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
+  flutter_libphonenumber:
+    :path: ".symlinks/plugins/flutter_libphonenumber/ios"
   flutter_widgetkit:
     :path: ".symlinks/plugins/flutter_widgetkit/ios"
   home_widget:
@@ -929,6 +937,7 @@ SPEC CHECKSUMS:
   FirebaseMessagingInterop: 1fc10aa48ca7bd70747d8211190890dccdfb9c65
   FirebaseSharedSwift: 30289ed76ccb441067a2cd3472cc5b2f491b9d8f
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_libphonenumber: 8e7a8f974fda0f5915cf0af846879adf90b08f51
   flutter_widgetkit: a0e9b0d50ee9bec366dad36c639509daaafc397a
   GoogleAppMeasurement: c7d6fff39bf2d829587d74088d582e32d75133c3
   GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
@@ -941,6 +950,7 @@ SPEC CHECKSUMS:
   Libuv-gRPC: 55e51798e14ef436ad9bc45d12d43b77b49df378
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
+  PhoneNumberKit: 441e8b26ec88d598e3591de9061eff18f5dd12e8
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   shared_preferences_foundation: 297b3ebca31b34ec92be11acd7fb0ba932c822ca
   smart_auth: 4bedbc118723912d0e45a07e8ab34039c19e04f2

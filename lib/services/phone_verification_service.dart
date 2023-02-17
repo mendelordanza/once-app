@@ -1,31 +1,37 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:once/repo/firebase_auth_repo.dart';
+import 'package:once/services/sign_in_state.dart';
+
+import '../repo/firebase_auth_repo.dart';
 
 final signInPhoneModelProvider =
-    StateNotifierProvider.autoDispose<SignInPhoneModel, AsyncValue<String>>(
-        (ref) {
+    StateNotifierProvider.autoDispose<SignInPhoneModel, SignInState>((ref) {
+  final authService = ref.watch(authServiceProvider);
   return SignInPhoneModel(
-    ref: ref,
+    authService: authService,
   );
 });
 
-class SignInPhoneModel extends StateNotifier<AsyncValue<String>> {
+class SignInPhoneModel extends StateNotifier<SignInState> {
   SignInPhoneModel({
-    required this.ref,
-  }) : super(const AsyncLoading());
+    required this.authService,
+  }) : super(const SignInState.notValid());
 
-  final Ref ref;
+  AuthService authService;
 
-  Future<void> verifyPhone({required String number}) async {
-    state = AsyncLoading();
+  Future<void> verifyPhone(String inputText) async {
+    state = SignInState.loading();
     try {
-      ref.read(firebaseAuthRepoProvider).verifyPhoneNumber(
-          number: number,
-          completion: (verificationId) {
-            state = AsyncData(verificationId);
-          });
+      authService.verifyPhone(
+        inputText: inputText,
+        completion: () {
+          state = SignInState.success();
+        },
+        error: (error) {
+          state = SignInState.error(error);
+        },
+      );
     } catch (e) {
-      state = AsyncData("");
+      state = SignInState.error(e.toString());
     }
   }
 }

@@ -66,7 +66,11 @@ dependencies:
   #HomeWidget
   home_widget: ^0.2.0+1
 
+  #WidgetKit for iOS
   flutter_widgetkit: ^1.0.3
+
+  #Country Code
+  flutter_libphonenumber: ^1.3.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

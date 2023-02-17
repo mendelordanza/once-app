@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:once/helper/route_strings.dart';
 import 'package:once/ui/code_page.dart';
-import 'package:once/ui/login_page.dart';
 
+import '../ui/countries_page.dart';
 import '../ui/landing_page.dart';
 
 class RouteGenerator {
@@ -18,13 +18,13 @@ class RouteGenerator {
       case RouteStrings.code:
         if (args is String) {
           return _navigate(
-            builder: (_) => CodePage(
-              verificationId: args,
-            ),
+            builder: (_) => CodePage(args),
           );
         } else {
           return _errorRoute();
         }
+      case RouteStrings.countries:
+        return _navigate(builder: (_) => CountriesPage());
       default:
         return _errorRoute();
     }

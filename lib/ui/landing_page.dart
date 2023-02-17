@@ -1,14 +1,11 @@
-import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:once/repo/firebase_auth_repo.dart';
 
-import '../helper/constant.dart';
 import '../helper/shared_prefs.dart';
 import '../models/push_notification_model.dart';
-import '../repo/firebase_auth_repo.dart';
 import '../repo/firestore_repo.dart';
 import '../services/onboarding_service.dart';
 import 'common/platform_progress_indicator.dart';
@@ -150,19 +147,18 @@ class _LandingPageState extends ConsumerState<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authStateProvider);
+    final authState = ref.watch(authStateChangesProvider);
     final isFinishedOnboarding = ref.watch(onboardingProvider);
     if (isFinishedOnboarding) {
-      return HomePage();
-      // return authState.when(
-      //     data: (data) {
-      //       if (data != null) {
-      //         return HomePage();
-      //       }
-      //       return LoginPage();
-      //     },
-      //     loading: () => PlatformProgressIndicator(),
-      //     error: (e, trace) => Text("Something went wrong."));
+      return authState.when(
+          data: (data) {
+            if (data != null) {
+              return HomePage();
+            }
+            return LoginPage();
+          },
+          loading: () => PlatformProgressIndicator(),
+          error: (e, trace) => Text("Something went wrong."));
     } else {
       return OnboardingPage();
     }

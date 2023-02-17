@@ -20,13 +20,6 @@ struct Provider: TimelineProvider {
         completion(entry)
     }
     
-//    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-//        getSnapshot(in: context) { (entry) in
-//            let timeline = Timeline(entries: [entry], policy: .atEnd)
-//            completion(timeline)
-//        }
-//    }
-    
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         var entries: [ExampleEntry] = []
 
@@ -54,14 +47,14 @@ struct OnceWidgetExtensionEntryView : View {
     
     var body: some View {
         VStack.init(alignment: .center, spacing: /*@START_MENU_TOKEN@*/nil/*@END_MENU_TOKEN@*/, content: {
-            Text(entry.title).font(.subheadline).colorScheme(.light)
+            Text(entry.title).font(.subheadline)
             Spacer()
                     .frame(height: 10)
             Text(entry.message)
                 .font(.body)
-                .widgetURL(URL(string: "homeWidgetExample://message?message=\(entry.message)&homeWidget")).colorScheme(.light)
+                .widgetURL(URL(string: "homeWidgetExample://message?message=\(entry.message)&homeWidget"))
         }
-        ).colorScheme(.light).padding(.all, 8)
+        ).padding(.all, 16)
     }
 }
 

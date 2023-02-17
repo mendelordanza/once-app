@@ -7,6 +7,7 @@ import 'package:flutter_widgetkit/flutter_widgetkit.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:once/helper/colors.dart';
 import 'package:once/helper/shared_prefs.dart';
+import 'package:once/repo/firebase_auth_repo.dart';
 import 'package:once/ui/common/custom_button.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -67,6 +68,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = ref.read(authServiceProvider);
     final prefs = ref.read(sharedPrefsProvider);
     return Scaffold(
       appBar: AppBar(
@@ -77,7 +79,11 @@ class _HomePageState extends ConsumerState<HomePage> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              auth.signOut().then((value) {
+                prefs.clear();
+              });
+            },
             icon: Icon(Icons.person),
           ),
         ],
@@ -98,6 +104,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                 style: TextStyle(fontSize: 24),
                 textAlign: TextAlign.center,
               ),
+              SizedBox(
+                height: 20,
+              ),
               Expanded(
                 child: TextField(
                   controller: textController,
@@ -112,6 +121,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                   cursorColor: CustomColors.darkColor,
                 ),
+              ),
+              CustomButton(onPressed: () {}, label: "Add as widget"),
+              SizedBox(
+                height: 10,
               ),
               CustomButton(
                   onPressed: () {

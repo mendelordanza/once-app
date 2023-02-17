@@ -1,139 +1,115 @@
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:ui' as ui;
 
-final firebaseAuthRepoProvider =
-    Provider<FirebaseAuthRepo>((ref) => FirebaseAuthRepo());
+import '../services/auth_state.dart';
 
-final authStateProvider = StreamProvider<User?>((ref) {
-  return ref.read(firebaseAuthRepoProvider).authStateChange;
+final authServiceProvider = Provider<AuthService>((ref) => AuthService());
+
+final authStateProvider = StateNotifierProvider<AuthService, AuthState>((ref) {
+  final authService = ref.watch(authServiceProvider);
+  return authService;
 });
 
-class FirebaseAuthRepo {
-  // For Authentication related functions you need an instance of FirebaseAuth
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+final authStateChangesProvider = StreamProvider<User?>(
+    (ref) => ref.watch(authServiceProvider).authStateChanges());
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+class AuthService extends StateNotifier<AuthState> {
+  AuthService() : super(AuthState.initializing()) {
+    _firebaseAuth = FirebaseAuth.instance;
+    _loadCountries();
+  }
 
-  //  This getter will be returning a Stream of User object.
-  //  It will be used to check if the user is logged in or not.
-  Stream<User?> get authStateChange => _auth.authStateChanges();
+  late FirebaseAuth _firebaseAuth;
+  late CountryWithPhoneCode _selectedCountry;
+  late String _verificationId;
+  List<CountryWithPhoneCode> countries = [];
 
-  verifyPhoneNumber(
-      {required String number, required Function(String) completion}) async {
-    await _auth.verifyPhoneNumber(
-      phoneNumber: number,
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        if (Platform.isAndroid) {
-          await _auth.signInWithCredential(credential);
-        }
+  Stream<User?> authStateChanges() => _firebaseAuth.authStateChanges();
+
+  CountryWithPhoneCode get selectedCountry => _selectedCountry;
+
+  String get phoneCode => _selectedCountry.phoneCode;
+
+  Future<void> _loadCountries() async {
+    try {
+      await FlutterLibphonenumber().init();
+      var _countries = CountryManager().countries;
+      _countries.sort((a, b) {
+        return a.countryName!
+            .toLowerCase()
+            .compareTo(b.countryName!.toLowerCase());
+      });
+      countries = _countries;
+
+      final langCode = ui.window.locale.languageCode.toUpperCase();
+      _firebaseAuth.setLanguageCode(langCode);
+
+      var filteredCountries =
+          countries.where((item) => item.countryCode == langCode);
+
+      if (filteredCountries.length == 0) {
+        filteredCountries = countries.where((item) => item.countryCode == 'US');
+      }
+      if (filteredCountries.length == 0) {
+        throw Exception('Unable to find a default country!');
+      }
+      setCountry(filteredCountries.first);
+    } catch (e) {
+      state = AuthState.error(e.toString());
+    }
+  }
+
+  void setCountry(CountryWithPhoneCode selectedCountry) {
+    _selectedCountry = selectedCountry;
+    state = AuthState.ready(selectedCountry);
+  }
+
+  Future<void> verifyPhone({
+    required String inputText,
+    required Function() completion,
+    required Function(String) error,
+  }) async {
+    await _firebaseAuth.verifyPhoneNumber(
+      phoneNumber: inputText,
+      verificationCompleted: (AuthCredential credential) async {
+        await _firebaseAuth.signInWithCredential(credential);
       },
-      verificationFailed: (FirebaseAuthException e) {
-        if (e.code == 'invalid-phone-number') {
-          print('The provided phone number is not valid.');
-        }
-        print(e.message);
+      verificationFailed: (FirebaseException e) {
+        error(e.code);
       },
-      codeSent: (String verificationId, int? resendToken) {
-        completion(verificationId);
+      codeSent: (verificationId, resendToken) {
+        _verificationId = verificationId;
+        completion();
       },
-      codeAutoRetrievalTimeout: (String verificationId) {},
+      codeAutoRetrievalTimeout: (String verificationId) {
+        _verificationId = verificationId;
+        completion();
+      },
+      timeout: Duration(seconds: 120),
     );
   }
 
-  signInWithCredential({
-    required String verificationId,
-    required String phoneNumber,
-    required String code,
-    required Function(UserCredential credential) onSuccess,
-    required Function(String error) onError,
+  Future<void> verifyCode({
+    required String smsCode,
+    required Function() completion,
+    required Function(String) error,
   }) async {
     try {
-      final credential = await _auth.signInWithCredential(
+      await _firebaseAuth.signInWithCredential(
         PhoneAuthProvider.credential(
-            verificationId: verificationId, smsCode: code),
+            verificationId: _verificationId, smsCode: smsCode),
       );
-      addUser(
-        uid: credential.user!.uid,
-        number: phoneNumber,
-      );
-      onSuccess(credential);
+      completion();
     } on FirebaseAuthException catch (e) {
-      onError(e.code);
+      error(e.code);
     } catch (e) {
       print(e);
     }
   }
 
-  Future<UserCredential?> signUp({
-    required String email,
-    required String firstName,
-    required String lastName,
-    required String password,
-  }) async {
-    try {
-      final credential = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      // addUser(
-      //   uid: credential.user!.uid,
-      //   email: email,
-      //   firstName: firstName,
-      //   lastName: lastName,
-      // );
-      return credential;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        return Future.error("weak-password");
-        // return "The password provided is too weak.";
-      } else if (e.code == 'email-already-in-use') {
-        return Future.error("email-already-in-use");
-        //return "The account already exists for that email. Please use a different email";
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future<void> addUser({
-    required String uid,
-    required String number,
-  }) {
-    CollectionReference users = _firestore.collection('users');
-    return users
-        .doc(uid)
-        .set({
-          'number': number,
-        })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
-  }
-
-  Future<UserCredential?> signIn({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      final credential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      return credential;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return Future.error("user-not-found");
-      } else if (e.code == 'wrong-password') {
-        return Future.error("wrong-password");
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future<void> logout() async {
-    return await _auth.signOut();
+  Future<void> signOut() async {
+    await _firebaseAuth.signOut();
   }
 }
