@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_widgetkit/flutter_widgetkit.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:once/helper/colors.dart';
+import 'package:once/helper/route_strings.dart';
 import 'package:once/helper/shared_prefs.dart';
 import 'package:once/repo/firebase_auth_repo.dart';
 import 'package:once/ui/common/custom_button.dart';
@@ -84,7 +86,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 prefs.clear();
               });
             },
-            icon: Icon(Icons.person),
+            icon: SvgPicture.asset("assets/icons/ic_person.svg"),
           ),
         ],
       ),
@@ -100,7 +102,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "What is one thing you want to accomplish that will make today a good day?",
+                "What is one thing you need to accomplish that will make today a good day?",
                 style: TextStyle(fontSize: 24),
                 textAlign: TextAlign.center,
               ),
@@ -122,7 +124,27 @@ class _HomePageState extends ConsumerState<HomePage> {
                   cursorColor: CustomColors.darkColor,
                 ),
               ),
-              CustomButton(onPressed: () {}, label: "Add as widget"),
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, RouteStrings.addAsWidget);
+                },
+                child: Text(
+                  "Add as widget",
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: CustomColors.backgroundColor,
+                  side: BorderSide(width: 1.0),
+                  padding: EdgeInsets.symmetric(vertical: 12.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  minimumSize: Size(0.0, 50.0),
+                ),
+              ),
               SizedBox(
                 height: 10,
               ),

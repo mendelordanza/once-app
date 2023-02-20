@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:once/helper/route_strings.dart';
 import 'package:once/services/verification_service.dart';
 import 'package:once/ui/common/custom_button.dart';
 import 'package:once/ui/common/platform_progress_indicator.dart';
@@ -86,7 +87,13 @@ class _CodePageState extends ConsumerState<CodePage> {
                             setState(() {
                               _isLoading = false;
                             });
-                            Navigator.pop(context);
+                            ref.read(authServiceProvider).getUser(
+                                navigateToHome: () {
+                              Navigator.pop(context);
+                            }, navigateToAddName: () {
+                              Navigator.popAndPushNamed(
+                                  context, RouteStrings.name);
+                            });
                           },
                           error: (error) {
                             var realCode = "";

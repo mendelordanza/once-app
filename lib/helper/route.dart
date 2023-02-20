@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:once/helper/route_strings.dart';
+import 'package:once/ui/add_as_widget_page.dart';
 import 'package:once/ui/code_page.dart';
+import 'package:once/ui/name_page.dart';
 
 import '../ui/countries_page.dart';
 import '../ui/landing_page.dart';
@@ -25,6 +27,10 @@ class RouteGenerator {
         }
       case RouteStrings.countries:
         return _navigate(builder: (_) => CountriesPage());
+      case RouteStrings.addAsWidget:
+        return _navigate(builder: (_) => AddAsWidgetPage());
+      case RouteStrings.name:
+        return _navigate(builder: (_) => NamePage());
       default:
         return _errorRoute();
     }

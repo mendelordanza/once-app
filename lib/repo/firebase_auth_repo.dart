@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_libphonenumber/flutter_libphonenumber.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,10 +19,12 @@ final authStateChangesProvider = StreamProvider<User?>(
 class AuthService extends StateNotifier<AuthState> {
   AuthService() : super(AuthState.initializing()) {
     _firebaseAuth = FirebaseAuth.instance;
+    _firestore = FirebaseFirestore.instance;
     _loadCountries();
   }
 
   late FirebaseAuth _firebaseAuth;
+  late FirebaseFirestore _firestore;
   late CountryWithPhoneCode _selectedCountry;
   late String _verificationId;
   List<CountryWithPhoneCode> countries = [];
@@ -102,6 +105,45 @@ class AuthService extends StateNotifier<AuthState> {
             verificationId: _verificationId, smsCode: smsCode),
       );
       completion();
+    } on FirebaseAuthException catch (e) {
+      error(e.code);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> getUser({
+    required Function() navigateToHome,
+    required Function() navigateToAddName,
+  }) async {
+    await _firestore
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .get()
+        .then((value) {
+      if (value.data() != null) {
+        navigateToHome();
+      } else {
+        navigateToAddName();
+      }
+    });
+  }
+
+  Future<void> addUser({
+    required String name,
+    required Function() completion,
+    required Function(String) error,
+  }) async {
+    try {
+      await _firestore
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .set({
+        "userId": FirebaseAuth.instance.currentUser?.uid ?? null,
+        "name": name,
+      }).then((value) {
+        completion();
+      });
     } on FirebaseAuthException catch (e) {
       error(e.code);
     } catch (e) {

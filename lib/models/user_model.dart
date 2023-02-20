@@ -13,7 +13,7 @@ class UserModel {
     required this.avatarUrl,
   }); // Challenge constructor that initializes the class fields
 
-  factory UserModel.fromJson(String id, Map<dynamic, dynamic> json) => UserModel(
+  factory UserModel.fromJson(String id, Map<String, dynamic> json) => UserModel(
     id: id,
     firstName: json['firstName'],
     lastName: json['lastName'],
