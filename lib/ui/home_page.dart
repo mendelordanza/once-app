@@ -33,7 +33,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       if (Platform.isAndroid) {
         Future.wait([
           HomeWidget.getWidgetData<String>('_counter',
-                  defaultValue: 'Default Message')
+                  defaultValue: '')
               .then((value) => textController.text = value ?? ""),
         ]);
       } else {
@@ -74,7 +74,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     final prefs = ref.read(sharedPrefsProvider);
     return Scaffold(
       appBar: AppBar(
-        title: Text("once"),
+        title: Text("Once"),
         elevation: 0,
         backgroundColor: Colors.transparent,
         centerTitle: true,
@@ -82,9 +82,10 @@ class _HomePageState extends ConsumerState<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              auth.signOut().then((value) {
-                prefs.clear();
-              });
+              // auth.signOut().then((value) {
+              //   prefs.clear();
+              // });
+              Navigator.pushNamed(context, RouteStrings.profile);
             },
             icon: SvgPicture.asset("assets/icons/ic_person.svg"),
           ),
@@ -102,7 +103,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "What is one thing you need to accomplish that will make today a good day?",
+                "What is the one thing you need to accomplish that will make today a good day?",
                 style: TextStyle(fontSize: 24),
                 textAlign: TextAlign.center,
               ),
@@ -117,6 +118,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   keyboardType: TextInputType.multiline,
                   decoration: InputDecoration(
                     border: InputBorder.none,
+                    hintText: "eg. write the 1st chapter of my book"
                   ),
                   style: TextStyle(
                     fontSize: 18,

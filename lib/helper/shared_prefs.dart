@@ -15,6 +15,7 @@ class SharedPrefs {
   static const String KEY_FIRST_NAME = "key_first_name";
   static const String KEY_LAST_NAME = "key_last_name";
   static const String KEY_TASK_FOR_TODAY = "KEY_TASK_FOR_TODAY";
+  static const String KEY_NOTIF_TIME = "KEY_NOTIF_TIME";
 
   Future setFinishedOnboarding(bool isFinished) async {
     await _preferences?.setBool(KEY_IS_FINISHED, isFinished);
@@ -51,6 +52,12 @@ class SharedPrefs {
   }
 
   String? getTaskForToday() => _preferences?.getString(KEY_TASK_FOR_TODAY);
+
+  Future setNotifDateTime(int timestamp) async {
+    await _preferences?.setInt(KEY_NOTIF_TIME, timestamp);
+  }
+
+  int? getNotifDateTime() => _preferences?.getInt(KEY_NOTIF_TIME);
 
   Future clear() async {
     await _preferences?.remove(KEY_USER_ID);

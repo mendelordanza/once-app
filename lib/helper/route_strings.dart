@@ -6,4 +6,5 @@ class RouteStrings {
   static const String countries = '/countries';
   static const String addAsWidget = '/addAsWidget';
   static const String name = '/name';
+  static const String profile = '/profile';
 }

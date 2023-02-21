@@ -6,6 +6,7 @@ import 'package:once/helper/route_strings.dart';
 import 'package:once/ui/add_as_widget_page.dart';
 import 'package:once/ui/code_page.dart';
 import 'package:once/ui/name_page.dart';
+import 'package:once/ui/profile_page.dart';
 
 import '../ui/countries_page.dart';
 import '../ui/landing_page.dart';
@@ -31,6 +32,8 @@ class RouteGenerator {
         return _navigate(builder: (_) => AddAsWidgetPage());
       case RouteStrings.name:
         return _navigate(builder: (_) => NamePage());
+      case RouteStrings.profile:
+        return _navigate(builder: (_) => ProfilePage());
       default:
         return _errorRoute();
     }

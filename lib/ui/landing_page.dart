@@ -51,10 +51,12 @@ class _LandingPageState extends ConsumerState<LandingPage> {
       print("The token is " + token!);
 
       //Subscribe to topic
-      _messaging.subscribeToTopic("challenges");
+      _messaging.subscribeToTopic("reminder");
 
       //Save FCM to db
-      database.addFCM(fcmToken: token);
+      if(token != null){
+        database.addFCM(fcmToken: token);
+      }
 
       // For handling the received notifications
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
