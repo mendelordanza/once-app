@@ -1,11 +1,15 @@
 import 'dart:io';
 
+import 'package:another_flushbar/flushbar.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_widgetkit/flutter_widgetkit.dart';
 import 'package:home_widget/home_widget.dart';
+import 'package:intl/intl.dart';
 import 'package:once/helper/colors.dart';
 import 'package:once/helper/route_strings.dart';
 import 'package:once/helper/shared_prefs.dart';
@@ -32,16 +36,17 @@ class _HomePageState extends ConsumerState<HomePage> {
     try {
       if (Platform.isAndroid) {
         Future.wait([
-          HomeWidget.getWidgetData<String>('_counter',
-                  defaultValue: '')
+          HomeWidget.getWidgetData<String>('_counter', defaultValue: '')
               .then((value) => textController.text = value ?? ""),
         ]);
       } else {
         final data = await WidgetKit.getItem(
             '_counter', 'group.G53UVF44L3.com.ralphordanza.once');
-        setState(() {
-          textController.text = data as String;
-        });
+        if (data != null) {
+          setState(() {
+            textController.text = data as String;
+          });
+        }
       }
     } on PlatformException catch (exception) {
       debugPrint('Error Getting Data. $exception');
@@ -58,6 +63,12 @@ class _HomePageState extends ConsumerState<HomePage> {
     }
   }
 
+  _setUserId() async {
+    //SET USER ID
+    await FirebaseAnalytics.instance
+        .setUserId(id: FirebaseAuth.instance.currentUser?.uid);
+  }
+
   @override
   void initState() {
     if (Platform.isAndroid) {
@@ -65,6 +76,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       HomeWidget.registerBackgroundCallback(backgroundCallback);
     }
     _loadData();
+    _setUserId();
     super.initState();
   }
 
@@ -72,6 +84,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget build(BuildContext context) {
     final auth = ref.read(authServiceProvider);
     final prefs = ref.read(sharedPrefsProvider);
+    final currentDate = DateFormat("MMM dd, yyyy").format(DateTime.now());
     return Scaffold(
       appBar: AppBar(
         title: Text("Once"),
@@ -104,7 +117,14 @@ class _HomePageState extends ConsumerState<HomePage> {
             children: [
               Text(
                 "What is the one thing you need to accomplish that will make today a good day?",
-                style: TextStyle(fontSize: 24),
+                style: TextStyle(fontSize: 22),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                currentDate,
                 textAlign: TextAlign.center,
               ),
               SizedBox(
@@ -116,10 +136,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                   maxLines: null,
                   maxLength: 250,
                   keyboardType: TextInputType.multiline,
+                  autofocus: true,
                   decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "eg. write the 1st chapter of my book"
-                  ),
+                      border: InputBorder.none,
+                      hintText: "eg. write the 1st chapter of my book"),
                   style: TextStyle(
                     fontSize: 18,
                   ),
@@ -131,7 +151,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   Navigator.pushNamed(context, RouteStrings.addAsWidget);
                 },
                 child: Text(
-                  "Add as widget",
+                  "How to add widget",
                   style: TextStyle(
                     color: Colors.black,
                   ),
@@ -151,7 +171,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 height: 10,
               ),
               CustomButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (Platform.isAndroid) {
                       updateText(textController.text);
                     } else {
@@ -159,6 +179,17 @@ class _HomePageState extends ConsumerState<HomePage> {
                           'group.G53UVF44L3.com.ralphordanza.once');
                       WidgetKit.reloadAllTimelines();
                     }
+
+                    Flushbar(
+                      message: "Task saved!",
+                      margin: EdgeInsets.all(8),
+                      borderRadius: BorderRadius.circular(8),
+                      duration: Duration(seconds: 2),
+                    ).show(context);
+
+                    //LOG EVENT
+                    await FirebaseAnalytics.instance
+                        .logEvent(name: "added_task");
                   },
                   label: "Save"),
             ],

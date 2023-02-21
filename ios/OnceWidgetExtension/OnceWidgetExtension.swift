@@ -66,8 +66,8 @@ struct OnceWidgetExtension: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             OnceWidgetExtensionEntryView(entry: entry)
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+        .configurationDisplayName("Today's One Thing")
+        .description("In sight, in mind. View your task directly from your home screen")
     }
 }
 
