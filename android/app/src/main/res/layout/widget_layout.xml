@@ -16,9 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:padding="12dp"
-            android:text="It would be a good day if I..."
-            android:textStyle="bold"
+            android:paddingTop="12dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="It will be a good day if I"
             android:textColor="#3A3A3A"
             android:textSize="16sp" />
 
@@ -28,7 +29,8 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:padding="12dp"
-            android:text="sdfhsdfhjjsdf"
+            android:text="sample text"
+            android:textStyle="bold"
             android:textColor="#3A3A3A"
             android:textSize="16sp" />
     </LinearLayout>

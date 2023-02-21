@@ -16,16 +16,9 @@ struct Provider: TimelineProvider {
     }
     
     func getSnapshot(in context: Context, completion: @escaping (ExampleEntry) -> ()) {
-        let entry = ExampleEntry(date: Date(), title: "It will be a good day if I...", message: "No Message Set")
+        let entry = ExampleEntry(date: Date(), title: "It will be a good day if I", message: "Write the 1st chapter of my book")
         completion(entry)
     }
-    
-//    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-//        getSnapshot(in: context) { (entry) in
-//            let timeline = Timeline(entries: [entry], policy: .atEnd)
-//            completion(timeline)
-//        }
-//    }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         var entries: [ExampleEntry] = []
@@ -34,7 +27,7 @@ struct Provider: TimelineProvider {
 
         let currentDate = Date()
         let entryDate = Calendar.current.date(byAdding: .hour, value: 24, to: currentDate)!
-        let entry = ExampleEntry(date: entryDate, title: "It will be a good day if I...", message: sharedDefaults?.string(forKey: "_counter") ?? "")
+        let entry = ExampleEntry(date: entryDate, title: "It will be a good day if I", message: sharedDefaults?.string(forKey: "_counter") ?? "")
         entries.append(entry)
 
         let timeline = Timeline(entries: entries, policy: .atEnd)
@@ -54,14 +47,14 @@ struct OnceWidgetExtensionEntryView : View {
     
     var body: some View {
         VStack.init(alignment: .center, spacing: /*@START_MENU_TOKEN@*/nil/*@END_MENU_TOKEN@*/, content: {
-            Text(entry.title).font(.subheadline).colorScheme(.light)
+            Text(entry.title).multilineTextAlignment(.center).font(.body).foregroundColor(.black).padding([.top, .leading, .trailing], 12)
             Spacer()
                     .frame(height: 10)
-            Text(entry.message)
-                .font(.body)
-                .widgetURL(URL(string: "homeWidgetExample://message?message=\(entry.message)&homeWidget")).colorScheme(.light)
+            Text(entry.message).multilineTextAlignment(.center)
+                .font(.headline).foregroundColor(.black).padding([.bottom, .leading, .trailing], 12)
+                .widgetURL(URL(string: "homeWidgetExample://message?message=\(entry.message)&homeWidget"))
         }
-        ).colorScheme(.light).padding(.all, 8)
+        ).frame(maxWidth: .infinity, maxHeight: .infinity).background(Color.white)
     }
 }
 

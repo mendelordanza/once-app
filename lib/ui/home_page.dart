@@ -3,10 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_widgetkit/flutter_widgetkit.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:once/helper/colors.dart';
+import 'package:once/helper/route_strings.dart';
 import 'package:once/helper/shared_prefs.dart';
+import 'package:once/repo/firebase_auth_repo.dart';
 import 'package:once/ui/common/custom_button.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -30,7 +33,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       if (Platform.isAndroid) {
         Future.wait([
           HomeWidget.getWidgetData<String>('_counter',
-                  defaultValue: 'Default Message')
+                  defaultValue: '')
               .then((value) => textController.text = value ?? ""),
         ]);
       } else {
@@ -67,18 +70,24 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = ref.read(authServiceProvider);
     final prefs = ref.read(sharedPrefsProvider);
     return Scaffold(
       appBar: AppBar(
-        title: Text("once"),
+        title: Text("Once"),
         elevation: 0,
         backgroundColor: Colors.transparent,
         centerTitle: true,
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.person),
+            onPressed: () {
+              // auth.signOut().then((value) {
+              //   prefs.clear();
+              // });
+              Navigator.pushNamed(context, RouteStrings.profile);
+            },
+            icon: SvgPicture.asset("assets/icons/ic_person.svg"),
           ),
         ],
       ),
@@ -94,9 +103,12 @@ class _HomePageState extends ConsumerState<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "What is one thing you want to accomplish that will make today a good day?",
+                "What is the one thing you need to accomplish that will make today a good day?",
                 style: TextStyle(fontSize: 24),
                 textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 20,
               ),
               Expanded(
                 child: TextField(
@@ -106,12 +118,37 @@ class _HomePageState extends ConsumerState<HomePage> {
                   keyboardType: TextInputType.multiline,
                   decoration: InputDecoration(
                     border: InputBorder.none,
+                    hintText: "eg. write the 1st chapter of my book"
                   ),
                   style: TextStyle(
                     fontSize: 18,
                   ),
                   cursorColor: CustomColors.darkColor,
                 ),
+              ),
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, RouteStrings.addAsWidget);
+                },
+                child: Text(
+                  "Add as widget",
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: CustomColors.backgroundColor,
+                  side: BorderSide(width: 1.0),
+                  padding: EdgeInsets.symmetric(vertical: 12.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  minimumSize: Size(0.0, 50.0),
+                ),
+              ),
+              SizedBox(
+                height: 10,
               ),
               CustomButton(
                   onPressed: () {

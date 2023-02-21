@@ -6,12 +6,10 @@ class UserAvatar extends StatelessWidget {
   final double width;
   final String? avatarUrl;
   final String firstName;
-  final String lastName;
   final Function()? onClick;
 
   UserAvatar({
     required this.firstName,
-    required this.lastName,
     required this.height,
     required this.width,
     this.avatarUrl,
@@ -45,7 +43,7 @@ class UserAvatar extends StatelessWidget {
                   BoxDecoration(color: Colors.white, shape: BoxShape.circle),
               child: Center(
                 child: Text(
-                  "${firstName[0]}${lastName[0]}",
+                  "${firstName[0]}",
                   style: TextStyle(
                     fontSize: width / 2,
                     fontWeight: FontWeight.w700,
