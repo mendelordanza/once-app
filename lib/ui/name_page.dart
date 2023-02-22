@@ -31,10 +31,11 @@ class _NamePageState extends ConsumerState<NamePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "What's your name?",
+                      "Once last thing\nWhat's your name?",
                       style: TextStyle(
                         fontSize: 24,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                     SizedBox(
                       height: 10,
@@ -43,6 +44,7 @@ class _NamePageState extends ConsumerState<NamePage> {
                       key: formKey,
                       child: CustomTextField(
                         controller: nameTextController,
+                        textInputType: TextInputType.text,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Name is required';

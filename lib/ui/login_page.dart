@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:once/helper/route_strings.dart';
@@ -5,6 +6,7 @@ import 'package:once/repo/firebase_auth_repo.dart';
 import 'package:once/ui/common/custom_button.dart';
 import 'package:once/ui/common/custom_text_field.dart';
 import 'package:once/ui/common/platform_progress_indicator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../services/country_provider.dart';
 
@@ -25,6 +27,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       RouteStrings.code,
       arguments: phoneNumber,
     );
+  }
+
+  Future<void> _launchUrl(String url) async {
+    final Uri _url = Uri.parse(url);
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $url');
+    }
   }
 
   @override
@@ -53,6 +62,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       key: formKey,
                       child: CustomTextField(
                         controller: numberTextController,
+                        textInputType: TextInputType.emailAddress,
                         prefix: GestureDetector(
                           onTap: () {
                             Navigator.of(context)
@@ -91,9 +101,56 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    "By tapping Continue, you are agreeing to our Terms of Service and Privacy Policy",
+                  RichText(
                     textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        const TextSpan(
+                          text: "By tapping Continue, you are agreeing to our ",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontFamily: 'Nunito',
+                          ),
+                        ),
+                        TextSpan(
+                          text: "Terms of Service",
+                          style: const TextStyle(
+                            decoration: TextDecoration.underline,
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontFamily: 'Nunito',
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              _launchUrl(
+                                  "https://absorbed-spleen-fff.notion.site/Once-App-Terms-and-Conditions-2bb6c9bd2083464789055b1eff987b1c");
+                            },
+                        ),
+                        const TextSpan(
+                          text: " and ",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontFamily: 'Nunito',
+                          ),
+                        ),
+                        TextSpan(
+                          text: "Privacy Policy",
+                          style: const TextStyle(
+                            decoration: TextDecoration.underline,
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontFamily: 'Nunito',
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              _launchUrl(
+                                  "https://absorbed-spleen-fff.notion.site/Once-App-Privacy-Policy-6885ea59b4d84f2ba963af7f48d56e62");
+                            },
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 10,
