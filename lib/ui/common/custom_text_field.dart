@@ -7,6 +7,7 @@ class CustomTextField extends StatelessWidget {
   String? hintText;
   String? Function(String?)? validator;
   Widget? prefix;
+  TextInputType? textInputType;
 
   CustomTextField({
     required this.controller,
@@ -15,6 +16,7 @@ class CustomTextField extends StatelessWidget {
     this.hintText,
     this.validator,
     this.prefix,
+    this.textInputType,
   });
 
   @override
@@ -22,7 +24,7 @@ class CustomTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if(label != null)
+        if (label != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Text(
@@ -37,8 +39,9 @@ class CustomTextField extends StatelessWidget {
         TextFormField(
           controller: controller,
           validator: validator,
-          keyboardType: TextInputType.emailAddress,
+          keyboardType: textInputType,
           textInputAction: textInputAction,
+          autofocus: true,
           decoration: InputDecoration(
             hintText: hintText,
             enabledBorder: OutlineInputBorder(

@@ -1,3 +1,5 @@
+import 'package:another_flushbar/flushbar.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:once/helper/route_strings.dart';
@@ -25,6 +27,7 @@ class _CodePageState extends ConsumerState<CodePage> {
   @override
   Widget build(BuildContext context) {
     final countdown = ref.watch(countdownProvider).value ?? 30;
+    final verification = ref.read(signInVerificationModelProvider.notifier);
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -42,10 +45,14 @@ class _CodePageState extends ConsumerState<CodePage> {
                         fontSize: 24,
                       ),
                     ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Form(
                       key: _formKey,
                       child: CustomTextField(
                         controller: pinTextController,
+                        textInputType: TextInputType.number,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Code is required';
@@ -60,18 +67,51 @@ class _CodePageState extends ConsumerState<CodePage> {
                         },
                       ),
                     ),
-                    Text("Enter 6-digit code sent to ${widget.phoneNumber}"),
-                    if (countdown == 0)
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(text: "Didn't receive the code? "),
-                            TextSpan(text: "Resend Code"),
-                          ],
-                        ),
-                      )
-                    else
-                      Text("$countdown"),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Enter 6-digit code sent to ${widget.phoneNumber}",
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Didn't receive the code? ",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontFamily: 'Nunito',
+                            ),
+                          ),
+                          TextSpan(
+                            text: "Resend Code",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.blue,
+                              fontFamily: 'Nunito',
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                verification.resendCode(widget.phoneNumber);
+                                Flushbar(
+                                  message: "Code sent!",
+                                  margin: EdgeInsets.all(8),
+                                  borderRadius: BorderRadius.circular(8),
+                                  duration: Duration(seconds: 2),
+                                ).show(context);
+                              },
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),

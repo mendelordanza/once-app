@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +16,8 @@ import 'package:once/helper/route_strings.dart';
 import 'package:once/helper/shared_prefs.dart';
 import 'package:once/repo/firebase_auth_repo.dart';
 import 'package:once/ui/common/custom_button.dart';
+
+import '../repo/firestore_repo.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   @override
@@ -69,6 +72,15 @@ class _HomePageState extends ConsumerState<HomePage> {
         .setUserId(id: FirebaseAuth.instance.currentUser?.uid);
   }
 
+  _setFCM() async {
+    final database = ref.read(firebaseRepoProvider);
+    final _messaging = FirebaseMessaging.instance;
+    String? token = await _messaging.getToken();
+    if(token != null){
+      database.addFCM(fcmToken: token);
+    }
+  }
+
   @override
   void initState() {
     if (Platform.isAndroid) {
@@ -77,6 +89,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     }
     _loadData();
     _setUserId();
+    _setFCM();
     super.initState();
   }
 
@@ -136,7 +149,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                   maxLines: null,
                   maxLength: 250,
                   keyboardType: TextInputType.multiline,
-                  autofocus: true,
                   decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: "eg. write the 1st chapter of my book"),
