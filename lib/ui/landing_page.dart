@@ -152,15 +152,16 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     final authState = ref.watch(authStateChangesProvider);
     final isFinishedOnboarding = ref.watch(onboardingProvider);
     if (isFinishedOnboarding) {
-      return authState.when(
-          data: (data) {
-            if (data != null) {
-              return HomePage();
-            }
-            return LoginPage();
-          },
-          loading: () => PlatformProgressIndicator(),
-          error: (e, trace) => Text("Something went wrong."));
+      // return authState.when(
+      //     data: (data) {
+      //       if (data != null) {
+      //         return HomePage();
+      //       }
+      //       return LoginPage();
+      //     },
+      //     loading: () => PlatformProgressIndicator(),
+      //     error: (e, trace) => Text("Something went wrong."));
+      return HomePage();
     } else {
       return OnboardingPage();
     }

@@ -12,7 +12,7 @@ const fcm = admin.messaging();
 //   response.send("Hello from Firebase!");
 // });
 
-exports.mondayNotif = functions.pubsub.schedule('0 17 * * 0').onRun((context) => {
+exports.mondayNotif = functions.pubsub.schedule('0 17 * * *').onRun((context) => {
     const promises = []; 
       // Notification details.
     const payload = {
@@ -26,6 +26,6 @@ exports.mondayNotif = functions.pubsub.schedule('0 17 * * 0').onRun((context) =>
             click_action: "FLUTTER_NOTIFICATION_CLICK",
         }
     };
-    promises.push(fcm.sendToTopic('/topics/challenges', payload)); 
+    promises.push(fcm.sendToTopic('/topics/reminder', payload)); 
     return Promise.all(promises);
 });
