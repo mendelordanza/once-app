@@ -106,15 +106,15 @@ class _HomePageState extends ConsumerState<HomePage> {
         centerTitle: true,
         automaticallyImplyLeading: false,
         actions: [
-          IconButton(
-            onPressed: () {
-              // auth.signOut().then((value) {
-              //   prefs.clear();
-              // });
-              Navigator.pushNamed(context, RouteStrings.profile);
-            },
-            icon: SvgPicture.asset("assets/icons/ic_person.svg"),
-          ),
+          // IconButton(
+          //   onPressed: () {
+          //     // auth.signOut().then((value) {
+          //     //   prefs.clear();
+          //     // });
+          //     Navigator.pushNamed(context, RouteStrings.profile);
+          //   },
+          //   icon: SvgPicture.asset("assets/icons/ic_person.svg"),
+          // ),
         ],
       ),
       body: SafeArea(
